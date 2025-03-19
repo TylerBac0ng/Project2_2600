@@ -21,6 +21,32 @@ int get_option(int type, const char *msg)
 	 */ 
 
 	/* Fill the code to add above functionality */
+
+	int num;
+	char character;
+
+	printf("%s", msg);
+
+	switch(type) {
+		case NUM:
+			scanf("%d", &num);
+			while (getchar() != '\n'); //clears buffer
+			if (num >= 0 && num <=6)  { //checks if input is between valid range
+				return num;
+			}
+		case CHAR:
+			scanf("%c", &character);
+			while (getchar() != '\n');
+			if(character =='Y' || character == 'N') {
+				return character;
+			}
+		case NONE:
+			getchar();
+			return 0;
+		default:
+			printf("Invalid input type\n");
+			return -1;
+	}
 }
 
 Status save_prompt(AddressBook *address_book)
@@ -54,6 +80,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 	 * Should be menu based
 	 * The menu provide navigation option if the entries increase the page size
 	 */ 
+	
 
 	return e_success;
 }
