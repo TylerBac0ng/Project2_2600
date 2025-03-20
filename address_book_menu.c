@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include "address_book.h"
 #include "address_book_menu.h"
+#include "address_book_fops.h"
 
 //#include "abk_fileops.h"
 //#include "abk_log.h"
@@ -30,6 +31,7 @@ int get_option(int type, const char *msg)
 	switch(type) {
 		case NUM:
 			scanf("%d", &num);
+			printf("num=%d\n", num);
 			while (getchar() != '\n'); //clears buffer
 			if (num >= 0 && num <=6)  { //checks if input is between valid range
 				return num;
@@ -37,7 +39,7 @@ int get_option(int type, const char *msg)
 		case CHAR:
 			scanf("%c", &character);
 			while (getchar() != '\n');
-			if(character =='Y' || character == 'N') {
+			if(character == 'Y' || character == 'N') {
 				return character;
 			}
 		case NONE:
@@ -92,7 +94,7 @@ void menu_header(const char *str)
 	system("clear");
 
 	printf("#######  Address Book  #######\n");
-	if (str != '\0')
+	if (str != NULL)
 	{
 		printf("#######  %s\n", str);
 	}
@@ -135,6 +137,7 @@ Status menu(AddressBook *address_book)
 		switch (option)
 		{
 			case e_add_contact:
+				add_contacts(address_book);
 				/* Add your implementation to call add_contacts function here */
 				break;
 			case e_search_contact:
@@ -163,11 +166,72 @@ Status menu(AddressBook *address_book)
 Status add_contacts(AddressBook *address_book)
 {
 	/* Add the functionality for adding contacts here */
+
+	//allocates memory if list isnt already allocated
+	if (address_book->list == NULL) {
+		address_book->list =malloc(10 * sizeof(ContactInfo)); //initially allocates memory for 10 contacts
+		if (address_book->list == NULL) {
+			printf("Memory allocation failed.\n");
+			return e_fail;
+		}
+		address_book->count = 0; //initializes count at 0 contacts because there are none added yet
+	}
+	printf("count = %d\n", address_book->count);
+
+	//if count exceeds the initial allocated memory (memory for 10 contacts), need to reallocate memory
+	if (address_book->count >= 10) {
+		address_book->list = realloc(address_book->list, 20 * sizeof(ContactInfo));
+		if (address_book->list == NULL) {
+			printf("Memory reallocation failed.\n");
+			return e_fail;
+		}
+	}
+
+	printf("Enter name: \n");
+	//reads line inputted by user and stores it into memory locations
+	fgets(address_book->list[address_book->count].name[0],NAME_LEN,stdin); //name plus the new line is stored so we have to remove the new line in the next line of code
+	// fscanf(stdin, "%s", address_book->list[address_book->count].name[0]); //reads the name inputted by user
+	//removes new line character (\n) from end of string stored in name[0], so the names will match 
+	address_book->list[address_book->count].name[0][strcspn(address_book->list[address_book->count].name[0],"\n")] = 0;
+	printf("name=%s\n", address_book->list[address_book->count].name[0]);
+
+	//goes through a loop of phone number count (users can enter up to 5 phone numbers)
+	for (int i = 0; i <= PHONE_NUMBER_COUNT; i++) {
+		printf("Enter phone number %d (or press enter to skip): \n", i + 1); //prompts user to enter indexed phone number
+		fgets(address_book->list[address_book->count].phone_numbers[i], NUMBER_LEN, stdin); //reads the phone number inputted by user
+		// fscanf(stdin, "%s", address_book->list[address_book->count].phone_numbers[i]); //reads the phone number inputted by user
+		address_book->list[address_book->count].phone_numbers[i][strcspn(address_book->list[address_book->count].phone_numbers[i],"\n")] = 0;
+		//if the user presses enter without actually inputted numbers, stops asking for more and breaks out loop
+		if(strlen(address_book->list[address_book->count].phone_numbers[i]) == 0) {
+			break;
+		}
+	}
+
+	//goes through a loop of emails (users can enter 5 emails)
+	for (int i = 0; i <= EMAIL_ID_COUNT; i++) {
+		printf("Enter email %d (or press enter to skip): ", i + 1);
+		fgets(address_book->list[address_book->count].email_addresses[i], EMAIL_ID_LEN, stdin); //reads the email inputted by user
+		
+		printf("email=%s\n", address_book->list[address_book->count].email_addresses[i]);
+		address_book->list[address_book->count].email_addresses[i][strcspn(address_book->list[address_book->count].email_addresses[i], "\n")] = 0;
+		if(strlen(address_book->list[address_book->count].email_addresses[i]) == 0) {
+			break;
+		}
+	}
+
+	printf("Enter seriel number: ");
+	scanf("%d", &address_book->list[address_book->count].si_no); //reads serial number inputted by user
+	while (getchar() != '\n'); // Discards all characters until a newline is encountered
+
+	address_book->count++;
+	return e_success;
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
 	/* Add the functionality for adding contacts here */
+	
+
 }
 
 Status search_contact(AddressBook *address_book)
