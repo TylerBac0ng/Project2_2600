@@ -12,6 +12,10 @@ int main(void)
 	AddressBook address_book;
 	Status ret;
 
+	address_book.count = 0;
+	address_book.list = NULL;
+	address_book.fp = NULL;
+	
 	/* Load the file from .csv file if any */
 	ret = load_file(&address_book);
 
