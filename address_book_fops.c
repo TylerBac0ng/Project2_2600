@@ -16,7 +16,7 @@ Status load_file(AddressBook *address_book)
 	 * Check for file existance
 	 */
 	FILE *temp_file =fopen(DEFAULT_FILE,"r");
-	int ret=-1;
+	ret = -1;
 	if(temp_file != NULL)
 	{
 		fclose(temp_file);

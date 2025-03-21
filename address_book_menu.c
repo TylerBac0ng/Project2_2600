@@ -229,10 +229,68 @@ Status add_contacts(AddressBook *address_book)
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
 {
-	/* Add the functionality for adding contacts here */
-	
+	int found = 0;
 
-}
+	for (int i = 0; i < address_book->count; i++) {
+
+		// Makes sure there's a match in the address book
+		int match = 0;
+
+		switch (field) {
+			case 0: // Search by name
+				for (int j = 0; j < NAME_COUNT; j++) {
+				if (strcasecmp(address_book->list[i].name[j], str) == 0) {
+                match = 1;
+                break;
+				}
+				break;
+			case 1: // Search by phone number
+				for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
+					if (strcasecmp(address_book->list[i].phone_numbers[j], str) == 0) {
+						match = 1;
+						break;
+					}
+				}
+				 break;
+			case 2: // Search by email
+				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
+					if (strcasecmp(address_book->list[i].email_addresses[j], str) == 0) {
+						match = 1;
+						break;
+					}
+				}
+				break;
+			case 3: // Search by serial number
+				if (address_book->list[i].si_no == atoi(str)) {
+					match = 1;
+					break;
+				}
+				break;
+			default: 
+				break;
+			}
+		}
+
+		if (match) {
+			found = 1;
+			printf("Name: %s\n", address_book->list[i].name[0]);
+			for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
+				printf("Phone number %d: %s\n", j + 1, address_book->list[i].phone_numbers[j]);
+			}
+			for (int j = 0; j < EMAIL_ID_COUNT; j++) {
+				printf("Email %d: %s\n", j + 1, address_book->list[i].email_addresses[j]);
+			}
+			printf("Serial number: %d\n", address_book->list[i].si_no);
+		}
+	}
+
+	if (!found) {
+        printf("No contact found with the given information\n");
+        return e_fail;
+    }
+	
+	return e_success;
+	}
 
 Status search_contact(AddressBook *address_book)
 {
@@ -241,7 +299,8 @@ Status search_contact(AddressBook *address_book)
 
 Status edit_contact(AddressBook *address_book)
 {
-	/* Add the functionality for edit contacts here */
+	
+
 }
 
 Status delete_contact(AddressBook *address_book)
