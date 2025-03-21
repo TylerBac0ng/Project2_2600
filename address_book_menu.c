@@ -129,7 +129,7 @@ Status menu(AddressBook *address_book)
 
 		if ((address_book-> count == 0) && (option != e_add_contact))
 		{
-			get_option(NONE, "No entries found!!. Would you like to add? Use Add Contacts");
+			get_option(NONE, "No meows found!!. Would you like to add? Use Add Contacts");
 
 			continue;
 		}
@@ -237,6 +237,39 @@ Status search(const char *str, AddressBook *address_book, int loop_count, int fi
 Status search_contact(AddressBook *address_book)
 {
 	/* Add the functionality for search contacts here */
+	char str[NAME_LEN];
+	int field;
+	
+	printf("Search by:\n");
+    printf("1. Name\n");
+    printf("2. Phone Number\n");
+    printf("3. Email Address\n");
+    printf("Enter your choice: ");
+    scanf("%d", &field);
+    while (getchar() != '\n'); //clear input buffer
+	if (field < 1 || field > 3) {
+		printf("Invalid choice.\n");
+		return e_fail;
+	}
+
+    //prompt user to enter the search string
+    printf("Enter the search term: ");
+    fgets(str, NAME_LEN, stdin);
+    str[strcspn(str, "\n")] = 0; //remove newline character
+
+    printf("You selected field %d and entered: %s\n", field, str);
+
+	Status result = search(str, address_book, address_book->count, field, "Searching...", e_search_contact);
+
+    if (result == e_success) {
+		printf("Contact found!\n");
+	} else {
+		printf("Contact not found.\n");
+	}
+
+
+	
+	
 }
 
 Status edit_contact(AddressBook *address_book)
