@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <ctype.h>
 
 #include "address_book.h"
+#include "address_book_fops.h"
 
 Status load_file(AddressBook *address_book)
 {
@@ -16,7 +16,7 @@ Status load_file(AddressBook *address_book)
 	 * Check for file existance
 	 */
 	FILE *temp_file =fopen(DEFAULT_FILE,"r");
-	int ret=-1;
+	ret=-1;
 	if(temp_file != NULL)
 	{
 		fclose(temp_file);
