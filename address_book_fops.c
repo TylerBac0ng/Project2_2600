@@ -12,8 +12,6 @@ Status load_file(AddressBook *address_book)
 	int ret;
 	char line[256];
 	char *token;
-	int count = 0;
-	ContactInfo temp_contact;
 	
 	/* Check for file existence */
 	FILE *temp_file = fopen(DEFAULT_FILE, "r");
@@ -34,6 +32,7 @@ Status load_file(AddressBook *address_book)
 		}
 		
 		/* First count the number of lines in CSV to allocate memory */
+		int count = 0;
 		while (fgets(line, sizeof(line), address_book->fp) != NULL)
 		{
 			count++;
@@ -50,6 +49,9 @@ Status load_file(AddressBook *address_book)
 			fclose(address_book->fp);
 			return e_fail;
 		}
+		
+		/* Initialize all memory to zero */
+		memset(address_book->list, 0, sizeof(ContactInfo) * address_book->count);
 		
 		/* Read CSV data line by line */
 		int i = 0;
@@ -70,21 +72,17 @@ Status load_file(AddressBook *address_book)
 				/* Set name */
 				token = strtok(NULL, ",");
 				if (token != NULL)
-					strcpy(address_book->list[i].name, token);
+					strncpy(address_book->list[i].name[0], token, NAME_LEN - 1);
 				
 				/* Set phone number */
 				token = strtok(NULL, ",");
 				if (token != NULL)
-					strcpy(address_book->list[i].phone_numbers[0], token);
+					strncpy(address_book->list[i].phone_numbers[0], token, NUMBER_LEN - 1);
 				
 				/* Set email */
 				token = strtok(NULL, ",");
 				if (token != NULL)
-					strcpy(address_book->list[i].email_addresses[0], token);
-				
-				/* Set number of phone numbers and emails to 1 for now */
-				address_book->list[i].phone_count = 1;
-				address_book->list[i].email_count = 1;
+					strncpy(address_book->list[i].email_addresses[0], token, EMAIL_ID_LEN - 1);
 			}
 			i++;
 		}
@@ -100,6 +98,7 @@ Status load_file(AddressBook *address_book)
 		
 		/* Initialize new address book */
 		address_book->count = 0;
+		address_book->list = NULL;
 	}
 	
 	/* Close the file as we've loaded everything into memory */
@@ -118,15 +117,12 @@ Status save_file(AddressBook *address_book)
 		return e_fail;
 	}
 	
-	/* Write CSV header if needed */
-	/* fprintf(address_book->fp, "SI_NO,Name,Phone,Email\n"); */
-	
 	/* Write all contacts as CSV */
 	for (int i = 0; i < address_book->count; i++)
 	{
 		fprintf(address_book->fp, "%d,%s,%s,%s\n", 
 				address_book->list[i].si_no,
-				address_book->list[i].name,
+				address_book->list[i].name[0],
 				address_book->list[i].phone_numbers[0],
 				address_book->list[i].email_addresses[0]);
 	}
