@@ -61,7 +61,7 @@ Status load_file(AddressBook *address_book)
 		fgets(line, sizeof(line), address_book->fp);
 		printf("%s\n", line);
 
-				int i = 1;
+		int i = 1;
 		while (fgets(line, sizeof(line), address_book->fp) != NULL && i < count)
 		{
 			/* Remove trailing newline if present */
