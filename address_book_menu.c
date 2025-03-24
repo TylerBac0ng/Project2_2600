@@ -130,7 +130,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			}
 			else
 			{
-				printf(":%-15s", ""); // Empty space if no phone number
+				printf(":%-33s:", ""); // Empty space if no phone number
 			}
 
 			// Print first email if available, else empty space
@@ -140,7 +140,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			}
 			else
 			{
-				printf("\n"); // Just move to next line
+				printf("%-27s:\n", ""); // Just move to next line
 			}
 			for (int k = 1; k <= 5; k++)
 			{
@@ -149,7 +149,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 
 				if (k < PHONE_NUMBER_COUNT && address_book->list[i].phone_numbers[k][0] != '\0')
 				{
-					printf(": %-32s", address_book->list[i].phone_numbers[k]);
+					printf(": %-32s:", address_book->list[i].phone_numbers[k]);
 				}
 				else
 				{
@@ -158,7 +158,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 
 				if (k < EMAIL_ID_COUNT && address_book->list[i].email_addresses[k][0] != '\0')
 				{
-					printf(": %-25s :\n", address_book->list[i].email_addresses[k]);
+					printf(" %-25s :\n", address_book->list[i].email_addresses[k]);
 				}
 				else
 				{
