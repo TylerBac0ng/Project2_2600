@@ -264,6 +264,7 @@ Status menu(AddressBook *address_book)
 		{
 		case e_add_contact:
 			/* Add your implementation to call add_contacts function here */
+			add_contacts(address_book);
 			break;
 		case e_search_contact:
 			search_contact(address_book);
