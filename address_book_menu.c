@@ -622,22 +622,7 @@ Status edit_contact(AddressBook *address_book)
 	{
 		get_option(NONE, "Invalid option!\n\nPress enter to continue...");
 		return e_fail;
-	}//prompt for select/cancel as shown in Fig 5.17
- 	printf("\nPress: [s] | Select, [q] | Cancel: ");
- 	char choice;
- 	scanf("%c", &choice);
- 	while (getchar() != '\n'); //clear input buffer
- 	
- 	if (choice == 'q' || choice == 'Q')
- 	{
- 		return e_back;  //cancel and go back
- 	}
- 	
- 	if (choice != 's' && choice != 'S')
- 	{
- 		get_option(NONE, "Invalid option!\n\nPress enter to continue...");
- 		return e_fail;
- 	}
+	}
 
 	// ask which contact to edit (by serial number)
 	int contact_index = -1;
@@ -830,88 +815,4 @@ Status delete_contact(AddressBook *address_book)
  	
  	get_option(NONE, "Contact updated successfully!\n\nPress enter to continue...");
  	return e_success;
-}
-
-Status delete_contact(AddressBook *address_book)
-{
-	if (address_book->count == 0)
-	{
-		get_option(NONE, "No contacts in address book to delete!\n\nPress enter to continue...");
-		return e_fail;
-	}
-
-	// menu for search criteria
-	int field_choice;
-	menu_header("Delete Contact");
-	printf("\nSearch contact by:\n");
-	printf("0. Name\n");
-	printf("1. Phone Number\n");
-	printf("2. Email\n");
-
-	printf("Enter choice (0-2): ");
-	scanf("%d", &field_choice);
-	while (getchar() != '\n')
-		; // clear input buffer
-
-	// Get search term
-	char search_term[50];
-	printf("Enter search term: ");
-	fgets(search_term, 50, stdin);
-	search_term[strcspn(search_term, "\n")] = 0; // remove newline
-
-	// search for the contact
-	Status search_result;
-	search_result = search(search_term, address_book, address_book->count, field_choice, "Delete Contact", e_delete);
-
-	if (search_result == e_fail)
-	{
-		get_option(NONE, "No contact found with the given information\n\nPress enter to continue...");
-		return e_fail;
-	}
-
-	for (int i = 0; i < address_book->count; i++)
-	{
-		int found_match = 0;
-
-		if (field_choice == 0 && strcmp((char *)address_book->list[i].name, search_term) == 0)
-		{
-			found_match = 1;
-		}
-		else if (field_choice == 1)
-		{
-			for (int j = 0; j < PHONE_NUMBER_COUNT; j++)
-			{
-				if (strcmp(address_book->list[i].phone_numbers[j], search_term) == 0)
-				{
-					found_match = 1;
-					break;
-				}
-			}
-		}
-		else if (field_choice == 2)
-		{
-			for (int j = 0; j < EMAIL_ID_COUNT; j++)
-			{
-				if (strcmp(address_book->list[i].email_addresses[j], search_term) == 0)
-				{
-					found_match = 1;
-					break;
-				}
-			}
-		}
-
-		if (found_match)
-		{
-			for (int j = 1; j < address_book->count - 1; j++)
-			{
-				address_book->list[j] = address_book->list[j + 1];
-			}
-
-			address_book->count--;
-			get_option(NONE, "Contact updated successfully!\n\nPress enter to continue...");
-			return e_success;
-		}
-	}
-	get_option(0, "No contact found with the given information\n\nPress enter to continue...");
-	return e_fail;
 }
