@@ -42,11 +42,16 @@ void test_search(void) {
     Status result = search("Ryder", &address_book, 0, 0, "Searching", e_search_contact);   
     // Add assertions to verify the expected behavior
     TEST_ASSERT_TRUE(result == e_success);
-
     result = search("Bob", &address_book, 0, 0, "Searching", e_search_contact);
     TEST_ASSERT_TRUE(result == e_fail);
 
+    result = search("12345", &address_book, 0, 1, "Searching", e_search_contact);   
+    // Add assertions to verify the expected behavior
+    TEST_ASSERT_TRUE(result == e_success);
+    result = search("54321", &address_book, 0, 1, "Searching", e_search_contact);
+    TEST_ASSERT_TRUE(result == e_fail);
 
+   
 }
 
 int main(void) {
