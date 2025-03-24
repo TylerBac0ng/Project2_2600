@@ -9,6 +9,7 @@
 
 Status load_file(AddressBook *address_book)
 {
+TylerB_branch
 	int ret;
 	char line[256];
 	char *token;
@@ -17,6 +18,7 @@ Status load_file(AddressBook *address_book)
 	FILE *temp_file = fopen(DEFAULT_FILE, "r");
 	ret = -1;
 	if (temp_file != NULL)
+    main
 	{
 		fclose(temp_file);
 		ret = 0;
