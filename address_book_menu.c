@@ -394,7 +394,7 @@ Status search_contact(AddressBook *address_book)
     	printf("3. Email Address\n");
     	printf("Enter your choice: ");
     	scanf("%d", &field);
-    	while (getchar() != '\n'); //clear input buffer
+    	while (getchar() != '\n'); //clear inputg buffer
 		if (field < 1 || field > 4) {
 			printf("Invalid choice.\n");
 			return e_fail;
@@ -478,6 +478,38 @@ Status edit_contact(AddressBook *address_book)
 		get_option(NONE, "No contact found with the given information\n\nPress enter to continue...");
 		return e_fail;
 	}
+
+	//prompt for select/cancel as shown in Fig 5.17
+	printf("\nPress: [s] | Select, [q] | Cancel: ");
+	char choice;
+	scanf("%c", &choice);
+	while (getchar() != '\n'); //clear input buffer
+	
+	if (choice == 'q' || choice == 'Q')
+	{
+		return e_back;  //cancel and go back
+	}
+	
+	if (choice != 's' && choice != 'S')
+	{
+		get_option(NONE, "Invalid option!\n\nPress enter to continue...");
+		return e_fail;
+	}//prompt for select/cancel as shown in Fig 5.17
+ 	printf("\nPress: [s] | Select, [q] | Cancel: ");
+ 	char choice;
+ 	scanf("%c", &choice);
+ 	while (getchar() != '\n'); //clear input buffer
+ 	
+ 	if (choice == 'q' || choice == 'Q')
+ 	{
+ 		return e_back;  //cancel and go back
+ 	}
+ 	
+ 	if (choice != 's' && choice != 'S')
+ 	{
+ 		get_option(NONE, "Invalid option!\n\nPress enter to continue...");
+ 		return e_fail;
+ 	}
 
 	// ask which contact to edit (by serial number)
 	int contact_index = -1;

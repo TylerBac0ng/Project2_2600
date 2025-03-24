@@ -34,7 +34,7 @@ void test_search(void) {
     address_book.list = malloc(sizeof(ContactInfo)); // Allocate memory for one contact
     strcpy(address_book.list[0].name[0],"Ryder"); // Set name for the contact
     strcpy(address_book.list[0].phone_numbers[0], "12345"); // Set phone number for the contact
-    strcpy(address_book.list[0].email_addresses[0], "ryder@gmail.com");
+    strcpy(address_book.list[0].email_addresses[0], "ryder@gmail.com"); // Set email address for the contact
     strcpy(address_book.list[0].email_addresses[1], "ryder@cpp.edu"); 
     address_book.list[0].si_no = 1; // Set serial number for the contact
     address_book.fp = NULL; // Initialize file pointer to NULL
@@ -62,8 +62,6 @@ void test_search(void) {
     TEST_ASSERT_TRUE(result == e_success);
     result = search("5", &address_book, 0, 3, "Searching", e_search_contact);
     TEST_ASSERT_TRUE(result == e_fail);
-
-   
 }
 
 int main(void) {
