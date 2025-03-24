@@ -57,9 +57,6 @@ Status load_file(AddressBook *address_book)
 		memset(address_book->list, 0, sizeof(ContactInfo) * address_book->count);
 		/* Read CSV data line by line */
 
-		// fgets(line, sizeof(line), address_book->fp);
-		// printf("%s\n", line);
-
 		int i = 0;
 		while (fgets(line, sizeof(line), address_book->fp) != NULL && i < count)
 		{
@@ -203,6 +200,19 @@ Status save_file(AddressBook *address_book)
 			fclose(address_book->fp);
 			return e_fail;
 		}
+	}
+
+	fclose(address_book->fp);
+	address_book->fp = NULL;
+
+	/* Write all contacts as CSV */
+	for (int i = 0; i < address_book->count; i++)
+	{
+		fprintf(address_book->fp, "%d,%s,%s,%s\n",
+				address_book->list[i].si_no,
+				address_book->list[i].name[0],
+				address_book->list[i].phone_numbers[0],
+				address_book->list[i].email_addresses[0]);
 	}
 
 	fclose(address_book->fp);

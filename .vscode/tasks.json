@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Project",
+            "type": "shell",
+            "command": "gcc",
+            "args": [
+                "-o",
+                "address_book.exe",
+                "address_book_menu.c",
+                "address_book_fops.c",
+                "main.c"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Build the Address Book project"
+        }
+    ]
+}
