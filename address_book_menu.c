@@ -104,58 +104,69 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 		menu_header(title);
 		printf("%s\n", msg);
 
+		// pagination
 		int start_page = page * PAGE_SIZE;
-		int end = (page + 1) * PAGE_SIZE < address_book->count ? (page + 1) * PAGE_SIZE : address_book->count;
+		int end = (start_page + PAGE_SIZE < address_book->count) ? start_page + PAGE_SIZE : address_book->count;
 
-		printf("=======================================================================================================\n");
+		printf("=============================================================================================================\n");
 
 		// print the contact info categories
-		printf(": %-10s : %-30s : %-30s  : %-18s :\n", "S.No", "Name", "Phone No", "Email ID");
+		printf(": %-10s : %-30s : %-30s  : %-25s :\n", "S.No", "Name", "Phone No", "Email ID");
 
-		printf("=======================================================================================================\n");
+		printf("=============================================================================================================\n");
 
 		// prints all entries with corresponding number + email
 
-		for (int i = 0; i < address_book->count; i++)
+		for (int i = 1; i < address_book->count; i++)
 		{
-			printf(": %-10d : %-30s \n", address_book->list[i + 1].si_no, (char *)address_book->list[i].name);
+			// printf(": %-10d : %-30s : %-30s  : %-25s :\n", address_book->list[i].si_no, (char *)address_book->list[i].name, address_book->list[i].phone_numbers[0], (char *)address_book->list[i].email_addresses[0]);
+			printf(": %-10d ", address_book->list[i].si_no);
+			printf(": %-31s", (char *)address_book->list[i].name);
 
-			for (int k = 0; k < PHONE_NUMBER_COUNT; k++)
+			// Print first phone number if available, else print empty space
+			if (address_book->list[i].phone_numbers[0][0] != '\0')
 			{
-				if (address_book->list[i].phone_numbers[k][0] != '\0')
+				printf(": %-32s", address_book->list[i].phone_numbers[0]);
+			}
+			else
+			{
+				printf(":%-15s", ""); // Empty space if no phone number
+			}
+
+			// Print first email if available, else empty space
+			if (address_book->list[i].email_addresses[0][0] != '\0')
+			{
+				printf(": %-25s :\n", address_book->list[i].email_addresses[0]); // Newline at the end
+			}
+			else
+			{
+				printf("\n"); // Just move to next line
+			}
+			for (int k = 1; k <= 5; k++)
+			{
+				printf(": %-11s", "");
+				printf(": %-31s", "");
+
+				if (k < PHONE_NUMBER_COUNT && address_book->list[i].phone_numbers[k][0] != '\0')
 				{
-					printf("hello");
-					printf("%-15s : ", address_book->list[i].phone_numbers[k]);
+					printf(": %-32s", address_book->list[i].phone_numbers[k]);
 				}
 				else
 				{
-					break;
+					printf(":%-32s :", "");
 				}
-			}
-			for (int k = PHONE_NUMBER_COUNT; k < 5; k++)
-			{
-				printf(" \n");
-			}
 
-			for (int j = 0; j < EMAIL_ID_COUNT; j++)
-			{
-				if (address_book->list[i].email_addresses[j][0] != '\0')
+				if (k < EMAIL_ID_COUNT && address_book->list[i].email_addresses[k][0] != '\0')
 				{
-					printf("hi");
-					printf("%-15s : ", address_book->list[i].email_addresses[j]);
+					printf(": %-25s :\n", address_book->list[i].email_addresses[k]);
 				}
 				else
 				{
-					break;
+					printf(" %-25s :\n", "");
 				}
 			}
-			for (int j = EMAIL_ID_COUNT; j < 5; j++)
-			{
-				printf(" \n");
-			}
+			printf("=============================================================================================================\n");
 		}
-
-		printf("=======================================================================================================\n");
 
 		printf("Press:\n");
 
@@ -172,7 +183,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 		printf("(Q) Cancel:\n");
 
 		// read in user input for navigation option
-		printf("Choose an option");
+		printf("Choose an option: ");
 		scanf(" %c", &input);
 
 		switch (input)
@@ -194,8 +205,10 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 		case 'Q':
 		case 'q':
 			printf("Exit program \n");
+			return 0;
 		default:
-			printf("Entered Invalid Input, Exiting Program. \n");
+			get_option(NONE, "Invalid choice!\n\nPress enter to continue...");
+			return e_fail;
 		}
 	} while (1);
 

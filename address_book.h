@@ -19,7 +19,7 @@
 
 #define FIELD_DELIMITER ','
 #define NEXT_ENTRY '\n'
-#define PAGE_SIZE 6
+#define PAGE_SIZE 5
 
 typedef int bool_t;
 
