@@ -51,6 +51,12 @@ void test_search(void) {
     result = search("54321", &address_book, 0, 1, "Searching", e_search_contact);
     TEST_ASSERT_TRUE(result == e_fail);
 
+    result = search("ryder@gmail.com", &address_book, 0, 2, "Searching", e_search_contact);   
+    // Add assertions to verify the expected behavior
+    TEST_ASSERT_TRUE(result == e_success);
+    result = search("ryder@yahoo.com", &address_book, 0, 2, "Searching", e_search_contact);
+    TEST_ASSERT_TRUE(result == e_fail);
+
    
 }
 
