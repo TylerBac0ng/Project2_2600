@@ -48,6 +48,7 @@ int get_option(int type, const char *msg)
 		default:
 			printf("Invalid input type\n");
 			return -1;
+		}
 }
 
 Status save_prompt(AddressBook *address_book)
