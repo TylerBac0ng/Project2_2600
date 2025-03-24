@@ -100,9 +100,8 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 		printf("%s\n", msg);
 
 		// pagination
-		int start_page = page * PAGE_SIZE + 1;
-		int end = start_page + 5;
-
+		int start_page = page * PAGE_SIZE;
+		int end = (start_page + PAGE_SIZE < address_book->count) ? start_page + PAGE_SIZE : address_book->count;
 
 		printf("=============================================================================================================\n");
 
@@ -113,7 +112,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 
 		// prints all entries with corresponding number + email
 
-		for (int i = start_page; i < end; i++)
+		for (int i = 1; i < address_book->count; i++)
 		{
 			// printf(": %-10d : %-30s : %-30s  : %-25s :\n", address_book->list[i].si_no, (char *)address_book->list[i].name, address_book->list[i].phone_numbers[0], (char *)address_book->list[i].email_addresses[0]);
 			printf(": %-10d ", address_book->list[i].si_no);
@@ -193,7 +192,10 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 			break;
 		case 'N':
 		case 'n':
+			if ((page + 1) * PAGE_SIZE < total_num_of_pages)
+			{
 				page++;
+			}
 			break;
 		case 'Q':
 		case 'q':
