@@ -10,16 +10,19 @@
 
 Status load_file(AddressBook *address_book)
 {
-
 	int ret;
 	char line[256];
 	char *token;
 	char *phone_num_token;
 
-	/* Check for file existence */
-	FILE *temp_file = fopen(DEFAULT_FILE, "r");
-	ret = -1;
-	if (temp_file != NULL)
+
+	/* 
+	 * Check for file existance
+	 */
+	FILE *temp_file =fopen(DEFAULT_FILE,"r");
+	ret=-1;
+	if(temp_file != NULL)
+
 	{
 		fclose(temp_file);
 		ret = 0;
