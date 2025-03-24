@@ -180,40 +180,25 @@ Status load_file(AddressBook *address_book)
 
 Status save_file(AddressBook *address_book)
 {
-	/*
-	 * Write contacts back to file.
-	 * Re write the complete file currently
-	 */
+	/* Open file for writing */
 	address_book->fp = fopen(DEFAULT_FILE, "w");
 	if (address_book->fp == NULL)
 	{
 		return e_fail;
 	}
-
-	/*
-	 * Add the logic to save the file
-	 * Make sure to do error handling
-	 */
-	// write the number of contacts first
-	if (fwrite(&address_book->count, sizeof(int), 1, address_book->fp) != 1)
+	
+	/* Write all contacts as CSV */
+	for (int i = 0; i < address_book->count; i++)
 	{
-		fclose(address_book->fp);
-		return e_fail;
+		fprintf(address_book->fp, "%d,%s,%s,%s\n", 
+				address_book->list[i].si_no,
+				address_book->list[i].name[0],
+				address_book->list[i].phone_numbers[0],
+				address_book->list[i].email_addresses[0]);
 	}
-
-	// write all contacts if there are any
-	if (address_book->count > 0 && address_book->list != NULL)
-	{
-		// write the entire contact array at once
-		if (fwrite(address_book->list, sizeof(ContactInfo), address_book->count, address_book->fp) != address_book->count)
-		{
-			fclose(address_book->fp);
-			return e_fail;
-		}
-	}
-
+	
 	fclose(address_book->fp);
 	address_book->fp = NULL;
-
+	
 	return e_success;
 }
