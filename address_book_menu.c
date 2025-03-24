@@ -175,10 +175,10 @@ Status edit_contact(AddressBook *address_book)
 		return e_back;
 	}
 	
-	// Adjust field_choice to match internal numbering (1-based to 0-based)
+	//adjust field_choice to match internal numbering (1-based to 0-based)
 	field_choice--;
 	
-	// Get search term
+	//get search term
 	char search_term[50];
 	printf("Enter the %s: ", field_choice == 0 ? "Name" : 
 						field_choice == 1 ? "Phone No" :
@@ -193,6 +193,23 @@ Status edit_contact(AddressBook *address_book)
 	if (search_result == e_fail)
 	{
 		get_option(NONE, "No contact found with the given information\n\nPress enter to continue...");
+		return e_fail;
+	}
+	
+	//prompt for select/cancel as shown in Fig 5.17
+	printf("\nPress: [s] | Select, [q] | Cancel: ");
+	char choice;
+	scanf("%c", &choice);
+	while (getchar() != '\n'); //clear input buffer
+	
+	if (choice == 'q' || choice == 'Q')
+	{
+		return e_back;  //cancel and go back
+	}
+	
+	if (choice != 's' && choice != 'S')
+	{
+		get_option(NONE, "Invalid option!\n\nPress enter to continue...");
 		return e_fail;
 	}
 	
@@ -219,14 +236,14 @@ Status edit_contact(AddressBook *address_book)
 		return e_fail;
 	}
 	
-	// Display contact details and edit options
+	//display contact details and edit options
 	while (1)
 	{
 		menu_header("Edit Contact:");
 		printf("\n0. Back\n");
 		printf("1. Name     : %s\n", address_book->list[actual_index].name[0]);
 		printf("2. Phone No : ");
-		// Display all phone numbers
+		//display all phone numbers
 		for (int i = 0; i < PHONE_NUMBER_COUNT; i++)
 		{
 			if (strlen(address_book->list[actual_index].phone_numbers[i]) > 0)
@@ -239,7 +256,7 @@ Status edit_contact(AddressBook *address_book)
 			}
 		}
 		printf("3. Email ID : ");
-		// Display all email addresses
+		//display all email addresses
 		for (int i = 0; i < EMAIL_ID_COUNT; i++)
 		{
 			if (strlen(address_book->list[actual_index].email_addresses[i]) > 0)
@@ -259,81 +276,61 @@ Status edit_contact(AddressBook *address_book)
 		
 		if (edit_choice == 0)
 		{
-			// Return to main menu
+			//return to main menu
 			return e_success;
 		}
 		
 		switch (edit_choice)
 		{
-			case 1: // Edit name
+			case 1: //edit name
 				printf("Enter the new Name: ");
 				fgets(address_book->list[actual_index].name[0], NAME_LEN, stdin);
 				address_book->list[actual_index].name[0][strcspn(address_book->list[actual_index].name[0], "\n")] = 0;
 				break;
 				
-			case 2: // Edit phone numbers
+			case 2: //edit phone numbers
 				{
-					if (strlen(address_book->list[actual_index].phone_numbers[0]) > 0)
-					{
-					// Show existing phone numbers
+					//show existing phone numbers with indices
 					printf("Enter Phone Number index to be changed (Max %d): ", PHONE_NUMBER_COUNT);
 					int phone_idx;
 					scanf("%d", &phone_idx);
-					while (getchar() != '\n'); // clear input buffer
+					while (getchar() != '\n'); //clear input buffer
 					
 					if (phone_idx < 1 || phone_idx > PHONE_NUMBER_COUNT)
 					{
-						printf("Invalid phone number index!\n");
-						continue;
+					printf("Invalid phone number index!\n");
+					continue;
 					}
 					
-					phone_idx--; // Convert to 0-based index
+					phone_idx--; //convert to 0-based index
 					
-					// Get new phone number
+					//get new phone number - exact prompt as shown in Fig 5.19
 					printf("Enter Phone Number %d [just enter removes the entry]: ", phone_idx + 1);
 					fgets(address_book->list[actual_index].phone_numbers[phone_idx], NUMBER_LEN, stdin);
 					address_book->list[actual_index].phone_numbers[phone_idx][strcspn(address_book->list[actual_index].phone_numbers[phone_idx], "\n")] = 0;
-					}
-					else
-					{
-					// Add first phone number
-					printf("Enter Phone Number 1: ");
-					fgets(address_book->list[actual_index].phone_numbers[0], NUMBER_LEN, stdin);
-					address_book->list[actual_index].phone_numbers[0][strcspn(address_book->list[actual_index].phone_numbers[0], "\n")] = 0;
-					}
 				}
 				break;
 				
-			case 3: // Edit email addresses
+			case 3: //edit email addresses
 				{
-					if (strlen(address_book->list[actual_index].email_addresses[0]) > 0)
-					{
-					// Show existing email addresses
+					//show existing email addresses with indices
 					printf("Enter Email ID index to be changed (Max %d): ", EMAIL_ID_COUNT);
 					int email_idx;
 					scanf("%d", &email_idx);
-					while (getchar() != '\n'); // clear input buffer
+					while (getchar() != '\n'); //clear input buffer
 					
 					if (email_idx < 1 || email_idx > EMAIL_ID_COUNT)
 					{
-						printf("Invalid email index!\n");
-						continue;
+					printf("Invalid email index!\n");
+					continue;
 					}
 					
-					email_idx--; // Convert to 0-based index
+					email_idx--; //convert to 0-based index
 					
-					// Get new email
+					//get new email
 					printf("Enter Email ID %d [just enter removes the entry]: ", email_idx + 1);
 					fgets(address_book->list[actual_index].email_addresses[email_idx], EMAIL_ID_LEN, stdin);
 					address_book->list[actual_index].email_addresses[email_idx][strcspn(address_book->list[actual_index].email_addresses[email_idx], "\n")] = 0;
-					}
-					else
-					{
-					// Add first email
-					printf("Enter Email ID 1: ");
-					fgets(address_book->list[actual_index].email_addresses[0], EMAIL_ID_LEN, stdin);
-					address_book->list[actual_index].email_addresses[0][strcspn(address_book->list[actual_index].email_addresses[0], "\n")] = 0;
-					}
 				}
 				break;
 				
