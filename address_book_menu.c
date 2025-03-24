@@ -117,7 +117,7 @@ Status list_contacts(AddressBook *address_book, const char *title, int *index, c
 
 		// prints all entries with corresponding number + email
 
-		for (int i = 1; i < address_book->count; i++)
+		for (int i = 0; i < address_book->count; i++)
 		{
 			// printf(": %-10d : %-30s : %-30s  : %-25s :\n", address_book->list[i].si_no, (char *)address_book->list[i].name, address_book->list[i].phone_numbers[0], (char *)address_book->list[i].email_addresses[0]);
 			printf(": %-10d ", address_book->list[i].si_no);
@@ -467,8 +467,7 @@ Status delete_contact(AddressBook *address_book)
 
 	// menu for search criteria
 	int field_choice;
-	menu_header("Delete Contact");
-	printf("\nSearch contact by:\n");
+	menu_header("Search Contact to Delete by:");
 	printf("0. Name\n");
 	printf("1. Phone Number\n");
 	printf("2. Email\n");

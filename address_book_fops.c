@@ -39,7 +39,6 @@ Status load_file(AddressBook *address_book)
 			count++;
 		}
 
-		printf("%-d", count);
 		/* Reset file pointer to beginning */
 		rewind(address_book->fp);
 
@@ -58,10 +57,10 @@ Status load_file(AddressBook *address_book)
 		memset(address_book->list, 0, sizeof(ContactInfo) * address_book->count);
 		/* Read CSV data line by line */
 
-		fgets(line, sizeof(line), address_book->fp);
-		printf("%s\n", line);
+		// fgets(line, sizeof(line), address_book->fp);
+		// printf("%s\n", line);
 
-		int i = 1;
+		int i = 0;
 		while (fgets(line, sizeof(line), address_book->fp) != NULL && i < count)
 		{
 			/* Remove trailing newline if present */
