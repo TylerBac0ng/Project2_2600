@@ -201,7 +201,7 @@ Status add_contacts(AddressBook *address_book)
     do {
         //display the menu with current values
 		printf("#######  Address Book #######\n");
-		printf("#######  Add Contacts");
+		printf("#######  Add Contact\n");
         printf("\n0. Back\n");
         printf("1. Name: [%s]\n", 
         strlen(address_book->list[address_book->count].name[0]) > 0 ? 
@@ -287,72 +287,95 @@ Status add_contacts(AddressBook *address_book)
 }
 
 Status search(const char *str, AddressBook *address_book, int loop_count, int field, const char *msg, Modes mode)
- {
- 	/* Add the functionality for adding contacts here */
- 	
- 	int found = 0;
- 
+{
+    int found = 0;
 
- 	for (int i = 0; i < address_book->count; i++) {
- 
- 		// Makes sure there's a match in the address book
- 		int match = 0;
- 
- 		switch (field) {
- 			case 0: // Search by name
- 				for (int j = 0; j < NAME_COUNT; j++) {
- 				if (strcasecmp(address_book->list[i].name[j], str) == 0) {
-                 match = 1;
-                 break;
- 				}
- 				break;
- 			case 1: // Search by phone number
- 				for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
- 					if (strcasecmp(address_book->list[i].phone_numbers[j], str) == 0) {
- 						match = 1;
- 						break;
- 					}
- 				}
- 				 break;
- 			case 2: // Search by email
- 				for (int j = 0; j < EMAIL_ID_COUNT; j++) {
- 					if (strcasecmp(address_book->list[i].email_addresses[j], str) == 0) {
- 						match = 1;
- 						break;
- 					}
- 				}
- 				break;
- 			case 3: // Search by serial number
- 				if (address_book->list[i].si_no == atoi(str)) {
- 					match = 1;
- 					break;
- 				}
- 				break;
- 			default: 
- 				break;
- 			}
- 		}
- 
- 		if (match) {
- 			found = 1;
- 			printf("Name: %s\n", address_book->list[i].name[0]);
- 			for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
- 				printf("Phone number %d: %s\n", j + 1, address_book->list[i].phone_numbers[j]);
- 			}
- 			for (int j = 0; j < EMAIL_ID_COUNT; j++) {
- 				printf("Email %d: %s\n", j + 1, address_book->list[i].email_addresses[j]);
- 			}
- 			printf("Serial number: %d\n", address_book->list[i].si_no);
- 		}
- 	}
- 
- 	if (!found) {
-         printf("No contact found with the given information\n");
-         return e_fail;
-     }
- 	
- 	return e_success;
- 	}
+    for (int i = 0; i < address_book->count; i++) {
+        // Check if there's a match in the address book
+        int match = 0;
+
+        switch (field) {
+            case 0: // Search by name
+                for (int j = 0; j < NAME_COUNT; j++) {
+                    if (strcasecmp(address_book->list[i].name[j], str) == 0) {
+                        match = 1;
+                        break;
+                    }
+                }
+                break;
+
+            case 1: // Search by phone number
+                for (int j = 0; j < PHONE_NUMBER_COUNT; j++) {
+                    if (strcasecmp(address_book->list[i].phone_numbers[j], str) == 0) {
+                        match = 1;
+                        break;
+                    }
+                }
+                break;
+
+            case 2: // Search by email
+                for (int j = 0; j < EMAIL_ID_COUNT; j++) {
+                    if (strcasecmp(address_book->list[i].email_addresses[j], str) == 0) {
+                        match = 1;
+                        break;
+                    }
+                }
+                break;
+
+            case 3: // Search by serial number
+                if (address_book->list[i].si_no == atoi(str)) {
+                    match = 1;
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        if (match) {
+            if (!found) {
+				printf("#######  Address Book  #######\n");
+				printf("#######  Search Results:\n\n");
+                //prints the table header only once
+                printf("====================================================================================================================\n");
+                printf(": S.No : Name                            : Phone Number(s)                       : Email(s)                        :\n");
+                printf("====================================================================================================================\n");
+            }
+
+            found = 1;
+
+        	// prints the contact details with consistent column widths
+			printf(": %-5d: %-30s: %-40s: %-30s:\n",
+			address_book->list[i].si_no,
+			address_book->list[i].name[0],
+			address_book->list[i].phone_numbers[0],
+			address_book->list[i].email_addresses[0]);
+
+			// determines the maximum number of rows needed for phone numbers and emails
+			int max_rows = PHONE_NUMBER_COUNT > EMAIL_ID_COUNT ? PHONE_NUMBER_COUNT : EMAIL_ID_COUNT;
+
+			// prints additional phone numbers and emails in the same row
+			for (int j = 1; j < max_rows; j++) {
+ 				printf(": %-5s: %-30s: %-40s: %-30s:\n",
+				"", // leaves S.No blank
+				"", // leaves Name blank
+				j < PHONE_NUMBER_COUNT && strlen(address_book->list[i].phone_numbers[j]) > 0 ? address_book->list[i].phone_numbers[j] : "",
+				j < EMAIL_ID_COUNT && strlen(address_book->list[i].email_addresses[j]) > 0 ? address_book->list[i].email_addresses[j] : "");
+			}
+
+			// prints a separator line after each contact
+			printf("====================================================================================================================\n");
+        }
+    }
+
+    if (!found) {
+        printf("No contact found with the given information\n");
+        return e_fail;
+    }
+
+    return e_success;
+}
+
 
 Status search_contact(AddressBook *address_book)
 {
@@ -362,6 +385,8 @@ Status search_contact(AddressBook *address_book)
 	//field to search by
 	int field;
 	
+	printf("#######  Address Book  #######\n");
+	printf("#######  Search Contact by:\n\n");
 	printf("Search by:\n");
     printf("1. Name\n");
     printf("2. Phone Number\n");
