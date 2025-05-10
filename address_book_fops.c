@@ -14,15 +14,10 @@ Status load_file(AddressBook *address_book)
 	char *token;
 	char *phone_num_token;
 
-
-	/* 
-	 * Check for file existance
-	 */
-	FILE *temp_file =fopen(DEFAULT_FILE,"r");
-	ret=-1;
-	if(temp_file != NULL)
-
-
+	/* Check for file existence */
+	FILE *temp_file = fopen(DEFAULT_FILE, "r");
+	ret = -1;
+	if (temp_file != NULL)
 	{
 		fclose(temp_file);
 		ret = 0;
@@ -44,7 +39,6 @@ Status load_file(AddressBook *address_book)
 			count++;
 		}
 
-		printf("%-d", count);
 		/* Reset file pointer to beginning */
 		rewind(address_book->fp);
 
@@ -63,10 +57,7 @@ Status load_file(AddressBook *address_book)
 		memset(address_book->list, 0, sizeof(ContactInfo) * address_book->count);
 		/* Read CSV data line by line */
 
-		fgets(line, sizeof(line), address_book->fp);
-		printf("%s\n", line);
-
-		int i = 1;
+		int i = 0;
 		while (fgets(line, sizeof(line), address_book->fp) != NULL && i < count)
 		{
 			/* Remove trailing newline if present */
@@ -171,7 +162,6 @@ Status load_file(AddressBook *address_book)
 	}
 
 	/* Close the file as we've loaded everything into memory */
-
 	fclose(address_book->fp);
 	address_book->fp = NULL;
 
@@ -180,25 +170,53 @@ Status load_file(AddressBook *address_book)
 
 Status save_file(AddressBook *address_book)
 {
-	/* Open file for writing */
+	/*
+	 * Write contacts back to file.
+	 * Re write the complete file currently
+	 */
 	address_book->fp = fopen(DEFAULT_FILE, "w");
 	if (address_book->fp == NULL)
 	{
 		return e_fail;
 	}
-	
+
+	/*
+	 * Add the logic to save the file
+	 * Make sure to do error handling
+	 */
+	// write the number of contacts first
+	if (fwrite(&address_book->count, sizeof(int), 1, address_book->fp) != 1)
+	{
+		fclose(address_book->fp);
+		return e_fail;
+	}
+
+	// write all contacts if there are any
+	if (address_book->count > 0 && address_book->list != NULL)
+	{
+		// write the entire contact array at once
+		if (fwrite(address_book->list, sizeof(ContactInfo), address_book->count, address_book->fp) != address_book->count)
+		{
+			fclose(address_book->fp);
+			return e_fail;
+		}
+	}
+
+	fclose(address_book->fp);
+	address_book->fp = NULL;
+
 	/* Write all contacts as CSV */
 	for (int i = 0; i < address_book->count; i++)
 	{
-		fprintf(address_book->fp, "%d,%s,%s,%s\n", 
+		fprintf(address_book->fp, "%d,%s,%s,%s\n",
 				address_book->list[i].si_no,
 				address_book->list[i].name[0],
 				address_book->list[i].phone_numbers[0],
 				address_book->list[i].email_addresses[0]);
 	}
-	
+
 	fclose(address_book->fp);
 	address_book->fp = NULL;
-	
+
 	return e_success;
 }
